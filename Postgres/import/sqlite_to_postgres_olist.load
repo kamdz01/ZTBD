@@ -1,0 +1,12 @@
+LOAD DATABASE
+    FROM sqlite:///data/olist.sqlite
+    INTO postgresql://postgres:postgres@postgres:5432/mydb
+
+WITH 
+  include drop, 
+  create tables, 
+  create indexes, 
+  reset sequences,
+  foreign keys,
+  preserve index names
+;
