@@ -1,0 +1,12 @@
+{
+    "databases": ["mongodb", "couchdb", "sqlite"],
+    "testScenarios": {
+        "insertTest": {
+            "description": "Insert x new records",
+            "sizes": [10, 100, 1000]
+        },
+        "fillTest": {
+            "description": "Fill the db with data"
+        }
+    }
+}

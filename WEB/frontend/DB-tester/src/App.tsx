@@ -1,11 +1,11 @@
 import './App.css'
-import ScriptExecutor from './components/ScriptExecutor'
+import TestResults from './components/TestResults'
 
 function App() {
 
   return (
     <>
-    <ScriptExecutor scriptName="file1" />
+    <TestResults/>
     </>
   )
 }
