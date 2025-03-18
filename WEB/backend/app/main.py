@@ -148,6 +148,7 @@ async def get_results(database: str, scenario: str, size: str):
     try:
         times = results[database][scenario][key]["times"]
     except KeyError:
-        raise HTTPException(status_code=404, detail="Wyniki nie znalezione dla podanych parametrów")
+        return {"database": database, "scenario": scenario, "size": size, "times": []}
+        # raise HTTPException(status_code=404, detail="Wyniki nie znalezione dla podanych parametrów")
     
     return {"database": database, "scenario": scenario, "size": size, "times": times}
