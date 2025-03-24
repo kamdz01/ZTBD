@@ -8,7 +8,7 @@ services:
       - "27017:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: secret
+      MONGO_INITDB_ROOT_PASSWORD: admin
     volumes:
       - mongo_data:/data/db
 
@@ -20,9 +20,9 @@ services:
     environment:
       ME_CONFIG_MONGODB_SERVER: mongodb
       ME_CONFIG_MONGODB_ADMINUSERNAME: admin
-      ME_CONFIG_MONGODB_ADMINPASSWORD: secret
-      ME_CONFIG_BASICAUTH_USERNAME: express
-      ME_CONFIG_BASICAUTH_PASSWORD: express123
+      ME_CONFIG_MONGODB_ADMINPASSWORD: admin
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: admin
     depends_on:
       - mongodb
 
