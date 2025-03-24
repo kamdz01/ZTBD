@@ -2,6 +2,7 @@
 
 echo "Kopiowanie olist.sqlite do DB/Postgres/import..."
 cp olist.sqlite DB/Postgres/import/olist.sqlite
+cp olist.sqlite DB/SQLite/olist.sqlite
 
 echo "Uruchamianie CouchDB..."
 (cd DB/CouchDB && docker-compose up -d)
