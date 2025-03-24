@@ -2,8 +2,10 @@ import os
 import csv
 import requests
 
-DATA_DIR = "/Users/mptb/Documents/Studia/Data_Science/1_sem/ZTBD/ZTBD/csv_exports"
-COUCH_URL = "http://admin:supersecret@localhost:5984"
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+print(SCRIPT_DIR)
+DATA_DIR = os.path.normpath(os.path.join(SCRIPT_DIR, "./..", "csv_exports"))
+COUCH_URL = "http://admin:admin@localhost:5984"
 CHUNK_SIZE = 10000
 
 

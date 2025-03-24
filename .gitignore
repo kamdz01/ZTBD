@@ -175,3 +175,5 @@ cython_debug/
 .pypirc
 
 olist.sqlite
+amazon-products.csv
+*.mov
