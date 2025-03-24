@@ -1,4 +1,4 @@
-version: "3"
+version: "3.9"
 
 services:
   postgres:
@@ -33,6 +33,12 @@ services:
       - ./import:/data
     depends_on:
       - postgres
+    command:
+      [
+        "pgloader",
+        "sqlite:///data/olist.sqlite",
+        "postgresql://postgres:postgres@postgres-db:5432/mydb",
+      ]
 
 volumes:
   postgres-data:
