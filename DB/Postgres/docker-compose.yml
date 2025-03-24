@@ -37,7 +37,7 @@ services:
       [
         "pgloader",
         "sqlite:///data/olist.sqlite",
-        "postgresql://postgres:postgres@postgres-db:5432/mydb",
+        "postgresql://admin:admin@postgres-db:5432/mydb",
       ]
 
 volumes:
