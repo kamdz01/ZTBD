@@ -3,7 +3,7 @@ import json
 import time
 import random
 import string
-from pymongo import MongoClient
+import psycopg2
 from datetime import datetime, timedelta
 
 
@@ -32,13 +32,13 @@ def generate_customer_data():
         "Belem",
     ]
 
-    return {
-        "customer_id": generate_id(),
-        "customer_unique_id": generate_id(),
-        "customer_zip_code_prefix": random.randint(10000, 99999),
-        "customer_city": random.choice(cities),
-        "customer_state": random.choice(states),
-    }
+    return (
+        generate_id(),
+        generate_id(),
+        random.randint(10000, 99999),
+        random.choice(cities),
+        random.choice(states),
+    )
 
 
 def generate_order_data(customer_id):
@@ -46,56 +46,68 @@ def generate_order_data(customer_id):
 
     purchase_date = generate_date()
 
-    return {
-        "order_id": generate_id(),
-        "customer_id": customer_id,
-        "order_status": random.choice(order_statuses),
-        "order_purchase_timestamp": purchase_date,
-        "order_approved_at": generate_date(),
-        "order_delivered_carrier_date": generate_date(),
-        "order_delivered_customer_date": generate_date(),
-        "order_estimated_delivery_date": generate_date(),
-    }
+    return (
+        generate_id(),
+        customer_id,
+        random.choice(order_statuses),
+        purchase_date,
+        generate_date(),
+        generate_date(),
+        generate_date(),
+        generate_date(),
+    )
 
 
 def run_insert_test(size):
 
-    client = MongoClient("mongodb://admin:admin@localhost:27017/")
-    db = client["olist"]
+    conn = psycopg2.connect(
+        host="localhost", port=5432, database="mydb", user="admin", password="admin"
+    )
 
-    customers_collection = db["customers"]
-    orders_collection = db["orders"]
+    cursor = conn.cursor()
 
     start_time = time.time()
 
     customers_ids = []
 
-    customers_to_insert = []
+    cursor.execute("BEGIN TRANSACTION")
     for _ in range(size):
         customer = generate_customer_data()
-        customers_to_insert.append(customer)
-        customers_ids.append(customer["customer_id"])
+        cursor.execute(
+            """
+            INSERT INTO customers (customer_id, customer_unique_id, customer_zip_code_prefix, customer_city, customer_state)
+            VALUES (%s, %s, %s, %s, %s)
+            """,
+            customer,
+        )
+        customers_ids.append(customer[0])
 
-    if customers_to_insert:
-        customers_collection.insert_many(customers_to_insert)
-
-    orders_to_insert = []
     for customer_id in customers_ids:
         num_orders = random.randint(1, 3)
         for _ in range(num_orders):
             order = generate_order_data(customer_id)
-            orders_to_insert.append(order)
+            cursor.execute(
+                """
+                INSERT INTO orders (
+                    order_id, customer_id, order_status, order_purchase_timestamp, 
+                    order_approved_at, order_delivered_carrier_date, order_delivered_customer_date, 
+                    order_estimated_delivery_date
+                )
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                """,
+                order,
+            )
 
-    if orders_to_insert:
-        orders_collection.insert_many(orders_to_insert)
+    conn.commit()
 
     end_time = time.time()
     elapsed_time = end_time - start_time
 
+    cursor.close()
+    conn.close()
+
     result = {"time": elapsed_time}
     print(json.dumps(result))
-
-    client.close()
 
     return elapsed_time
 

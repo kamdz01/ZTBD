@@ -3,7 +3,7 @@ import json
 import time
 import random
 import string
-from pymongo import MongoClient
+import requests
 from datetime import datetime, timedelta
 
 
@@ -33,7 +33,7 @@ def generate_customer_data():
     ]
 
     return {
-        "customer_id": generate_id(),
+        "_id": generate_id(),
         "customer_unique_id": generate_id(),
         "customer_zip_code_prefix": random.randint(10000, 99999),
         "customer_city": random.choice(cities),
@@ -47,7 +47,7 @@ def generate_order_data(customer_id):
     purchase_date = generate_date()
 
     return {
-        "order_id": generate_id(),
+        "_id": generate_id(),
         "customer_id": customer_id,
         "order_status": random.choice(order_statuses),
         "order_purchase_timestamp": purchase_date,
@@ -60,11 +60,10 @@ def generate_order_data(customer_id):
 
 def run_insert_test(size):
 
-    client = MongoClient("mongodb://admin:admin@localhost:27017/")
-    db = client["olist"]
+    couch_url = "http://admin:admin@localhost:5984"
 
-    customers_collection = db["customers"]
-    orders_collection = db["orders"]
+    customers_db = "customers"
+    orders_db = "orders"
 
     start_time = time.time()
 
@@ -74,10 +73,12 @@ def run_insert_test(size):
     for _ in range(size):
         customer = generate_customer_data()
         customers_to_insert.append(customer)
-        customers_ids.append(customer["customer_id"])
+        customers_ids.append(customer["_id"])
 
     if customers_to_insert:
-        customers_collection.insert_many(customers_to_insert)
+        requests.post(
+            f"{couch_url}/{customers_db}/_bulk_docs", json={"docs": customers_to_insert}
+        )
 
     orders_to_insert = []
     for customer_id in customers_ids:
@@ -87,15 +88,15 @@ def run_insert_test(size):
             orders_to_insert.append(order)
 
     if orders_to_insert:
-        orders_collection.insert_many(orders_to_insert)
+        requests.post(
+            f"{couch_url}/{orders_db}/_bulk_docs", json={"docs": orders_to_insert}
+        )
 
     end_time = time.time()
     elapsed_time = end_time - start_time
 
     result = {"time": elapsed_time}
     print(json.dumps(result))
-
-    client.close()
 
     return elapsed_time
 
