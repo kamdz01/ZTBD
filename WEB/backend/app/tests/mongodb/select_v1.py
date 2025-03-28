@@ -9,12 +9,30 @@ def run_select_test(limit=100):
     client = MongoClient("mongodb://admin:admin@localhost:27017/")
     db = client["olist"]
 
+    # Tworzenie indeksów w celu przyspieszenia zapytania
+    try:
+        db.orders.create_index("order_status")
+        db.orders.create_index("order_id")
+        db.customers.create_index("customer_id")
+        db.order_items.create_index("order_id")
+        db.products.create_index("product_id")
+        db.sellers.create_index("seller_id")
+        db.order_payments.create_index("order_id")
+        db.order_reviews.create_index("order_id")
+    except Exception as e:
+        print(f"Ostrzeżenie: Nie można utworzyć indeksów: {e}")
+
     # Start pomiaru czasu
     start_time = time.time()
 
-    # Agregacja z operacjami $lookup (odpowiednik JOIN)
+    # Zoptymalizowana agregacja - najpierw filtrowanie i limit, potem złączenia
     pipeline = [
+        # Filtrowanie na samym początku
         {"$match": {"order_status": "delivered"}},
+        # Sortowanie i limit przed drogimi operacjami
+        {"$sort": {"order_purchase_timestamp": -1}},
+        {"$limit": limit},
+        # Dalsze operacje na mniejszym zbiorze danych
         {
             "$lookup": {
                 "from": "customers",
@@ -23,7 +41,7 @@ def run_select_test(limit=100):
                 "as": "customer",
             }
         },
-        {"$unwind": "$customer"},
+        {"$unwind": {"path": "$customer", "preserveNullAndEmptyArrays": True}},
         {
             "$lookup": {
                 "from": "order_items",
@@ -32,7 +50,7 @@ def run_select_test(limit=100):
                 "as": "items",
             }
         },
-        {"$unwind": "$items"},
+        {"$unwind": {"path": "$items", "preserveNullAndEmptyArrays": True}},
         {
             "$lookup": {
                 "from": "products",
@@ -41,7 +59,7 @@ def run_select_test(limit=100):
                 "as": "product",
             }
         },
-        {"$unwind": "$product"},
+        {"$unwind": {"path": "$product", "preserveNullAndEmptyArrays": True}},
         {
             "$lookup": {
                 "from": "sellers",
@@ -50,7 +68,7 @@ def run_select_test(limit=100):
                 "as": "seller",
             }
         },
-        {"$unwind": "$seller"},
+        {"$unwind": {"path": "$seller", "preserveNullAndEmptyArrays": True}},
         {
             "$lookup": {
                 "from": "order_payments",
@@ -88,11 +106,10 @@ def run_select_test(limit=100):
                 "review_score": {"$arrayElemAt": ["$review.review_score", 0]},
             }
         },
-        {"$sort": {"order_purchase_timestamp": -1}},
-        {"$limit": limit},
     ]
 
-    results = list(db.orders.aggregate(pipeline))
+    # Użycie allowDiskUse, aby umożliwić wykorzystanie dysku przy dużych danych
+    results = list(db.orders.aggregate(pipeline, allowDiskUse=True))
 
     # Koniec pomiaru czasu
     end_time = time.time()

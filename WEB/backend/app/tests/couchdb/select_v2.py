@@ -11,38 +11,33 @@ def run_select_test(limit=100):
     # Start pomiaru czasu
     start_time = time.time()
 
-    # Definicja dokumentu design z widokiem map-reduce
+    # Definiowanie i utworzenie widoku, jeśli nie istnieje
     design_doc = {
         "_id": "_design/orders",
         "views": {
             "daily_orders": {
-                "map": "function(doc) { "
-                "  if (doc.order_purchase_timestamp) { "
-                "    emit(doc.order_purchase_timestamp.substring(0, 10), 1); "
-                "  } "
-                "}",
+                "map": "function(doc) { if (doc.order_purchase_timestamp) { emit(doc.order_purchase_timestamp.substring(0, 10), 1); } }",
                 "reduce": "_count",
             }
         },
         "language": "javascript",
     }
 
-    # Próba utworzenia lub aktualizacji dokumentu design
+    # Próba utworzenia lub aktualizacji dokumentu projektu
     try:
-        # PUT do dokumentu design - jeśli dokument już istnieje, zostanie nadpisany
         requests.put(f"{couch_url}/orders/_design/orders", json=design_doc)
     except Exception as e:
-        # Ignorujemy błędy, dokument może już istnieć
-        print(f"Błąd podczas tworzenia dokumentu design: {e}")
+        # Ignorujemy błędy (dokument może już istnieć)
+        pass
 
-    # Zapytanie do widoku z parametrem group=true (grupowanie wg klucza)
+    # Zapytanie do widoku
     view_url = f"{couch_url}/orders/_design/orders/_view/daily_orders"
     params = {"group": "true", "limit": limit}
 
     response = requests.get(view_url, params=params)
     data = response.json()
 
-    # Przetwarzanie wyników widoku
+    # Przetwarzanie wyników
     results = []
     for row in data.get("rows", []):
         results.append({"day": row["key"], "order_count": row["value"]})
@@ -51,16 +46,17 @@ def run_select_test(limit=100):
     end_time = time.time()
     elapsed_time = end_time - start_time
 
-    # Zwracanie wyniku testu
+    # Zwracanie wyniku
     result = {"time": elapsed_time, "count": len(results)}
-    print(json.dumps(result, indent=2))
+    print(json.dumps(result))
 
     return elapsed_time
 
 
 if __name__ == "__main__":
-    # Pobranie limitu z argumentów (domyślnie 100)
-    limit = 100
+    # Pobranie limitu z argumentów
+    limit = 100  # domyślnie
     if len(sys.argv) > 1:
         limit = int(sys.argv[1])
+
     run_select_test(limit)
