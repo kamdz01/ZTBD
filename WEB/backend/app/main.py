@@ -15,6 +15,58 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Funkcja inicjalizująca plik testResults.json
+def initialize_test_results():
+    tests_file = os.path.join(os.path.dirname(__file__), "tests", "tests.json")
+    results_file = os.path.join(os.path.dirname(__file__), "tests", "testResults.json")
+    
+    # Sprawdź, czy plik testResults.json istnieje
+    if not os.path.exists(results_file):
+        with open(results_file, "w") as f:
+            json.dump({}, f)
+    
+    # Wczytaj dane z tests.json
+    with open(tests_file, "r") as f:
+        tests = json.load(f)
+    
+    # Wczytaj istniejące wyniki (jeśli są)
+    with open(results_file, "r") as f:
+        try:
+            results = json.load(f)
+        except json.JSONDecodeError:
+            results = {}
+    
+    # Inicjalizacja struktury dla każdej bazy danych i scenariusza
+    for database in tests["databases"]:
+        if database not in results:
+            results[database] = {}
+        
+        for scenario, scenario_data in tests["testScenarios"].items():
+            if scenario not in results[database]:
+                results[database][scenario] = {}
+            
+            # Dodaj strukturę dla każdego rozmiaru lub dla domyślnego
+            if "sizes" in scenario_data:
+                for size in scenario_data["sizes"]:
+                    size_key = str(size)
+                    if size_key not in results[database][scenario]:
+                        results[database][scenario][size_key] = {"times": []}
+            else:
+                # Dla scenariuszy bez rozmiaru
+                if "default" not in results[database][scenario]:
+                    results[database][scenario]["default"] = {"times": []}
+    
+    # Zapisz zaktualizowaną strukturę
+    with open(results_file, "w") as f:
+        json.dump(results, f, indent=4)
+    
+    return results
+
+# Wywołaj inicjalizację przy starcie aplikacji
+@app.on_event("startup")
+async def startup_event():
+    initialize_test_results()
+
 @app.get("/insertTest")
 async def read_root():
     return {"message": "Hello World"}
@@ -140,6 +192,8 @@ async def get_test_scenarios():
 
 @app.get("/results/{database}/{scenario}/{size}")
 async def get_results(database: str, scenario: str, size: str):
+
+    initialize_test_results()
     results_file = os.path.join(os.path.dirname(__file__), "tests", "testResults.json")
     with open(results_file, "r") as f:
         results = json.load(f)
