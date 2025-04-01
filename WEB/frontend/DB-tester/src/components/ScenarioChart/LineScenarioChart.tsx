@@ -1,6 +1,8 @@
 import React from 'react';
 import { Line } from 'react-chartjs-2';
-import type { ChartDataset } from 'chart.js';
+import type { ChartDataset, ChartOptions } from 'chart.js';
+import { Chart, LogarithmicScale } from 'chart.js';
+Chart.register(LogarithmicScale);
 
 export interface LineChartData {
     labels: string[];
@@ -14,7 +16,7 @@ interface LineScenarioChartProps {
 const chartColor = '#a7a7a7';
 
 const LineScenarioChart: React.FC<LineScenarioChartProps> = ({ data }) => {
-    const options = {
+    const options: ChartOptions<'line'> = {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
@@ -30,7 +32,8 @@ const LineScenarioChart: React.FC<LineScenarioChartProps> = ({ data }) => {
             y: {
                 title: { display: true, text: 'Wartość' },
                 ticks: { color: chartColor },
-                grid: { color: chartColor }
+                grid: { color: chartColor },
+                type: 'logarithmic',
             },
         },
     };

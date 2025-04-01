@@ -1,3 +1,4 @@
+import os
 import sys
 import json
 import time
@@ -58,9 +59,12 @@ def generate_order_data(customer_id):
 
 def run_insert_test(size):
 
-    conn = sqlite3.connect(
-        "/Users/mptb/Documents/Studia/Data_Science/1_sem/ZTBD/ZTBD/DB/SQLite/olist.sqlite"
-    )
+    base_dir = os.path.dirname(__file__)
+    project_dir = os.path.abspath(os.path.join(base_dir, "../../../../../"))
+    db_path = os.path.join(project_dir, "DB", "SQLite", "olist.sqlite")
+
+    conn = sqlite3.connect(db_path)
+    
     cursor = conn.cursor()
 
     start_time = time.time()
