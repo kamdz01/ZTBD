@@ -7,7 +7,7 @@ from pymongo import MongoClient
 def run_select_test(limit=100):
     # Połączenie z MongoDB
     client = MongoClient("mongodb://admin:admin@localhost:27017/")
-    db = client["olist"]
+    db = client["ecommerce"]
 
     # Start pomiaru czasu
     start_time = time.time()
@@ -41,10 +41,10 @@ def run_select_test(limit=100):
     client.close()
 
     # Zwracanie wyniku
-    result = {"time": elapsed_time, "count": len(results)}
+    result = {"time": elapsed_time, "rows": len(results)}
     print(json.dumps(result))
 
-    return elapsed_time
+    return elapsed_time, results
 
 
 if __name__ == "__main__":

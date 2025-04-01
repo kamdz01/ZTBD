@@ -41,10 +41,10 @@ def run_select_test(limit=100):
     conn.close()
 
     # Zwracanie wyniku
-    result = {"time": elapsed_time, "count": len(results_list)}
+    result = {"time": elapsed_time, "rows": len(results_list)}
     print(json.dumps(result))
 
-    return elapsed_time
+    return elapsed_time, results_list
 
 
 if __name__ == "__main__":
