@@ -18,7 +18,7 @@ def run_join_test():
     # pobieramy: id klienta, miasto, liczbę zatwierdzonych zamówień
     # oraz datę ostatniego zatwierdzonego zamówienia
     query = """
-        SELECT c.customer_id, c.customer_city, agg.total_orders, agg.last_order_purchase_timestamp
+        SELECT c.customer_id, c.customer_city, agg.last_order_purchase_timestamp
         FROM customers c
         JOIN (
             SELECT customer_id, 
@@ -27,7 +27,7 @@ def run_join_test():
             FROM orders
             WHERE order_status = 'approved'
             GROUP BY customer_id
-            HAVING COUNT(*) >= 2
+            HAVING COUNT(*) >= 1
         ) agg ON c.customer_id = agg.customer_id
         ORDER BY agg.last_order_purchase_timestamp DESC
     """
