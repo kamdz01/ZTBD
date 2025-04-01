@@ -10,7 +10,7 @@ def run_join_test():
     conn = psycopg2.connect(
         host="localhost", port=5432, database="mydb", user="admin", password="admin"
     )
-    
+
     cursor = conn.cursor()
 
     start_time = time.time()

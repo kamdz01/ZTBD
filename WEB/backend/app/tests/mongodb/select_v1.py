@@ -119,10 +119,10 @@ def run_select_test(limit=100):
     client.close()
 
     # Zwracanie wyniku
-    result = {"time": elapsed_time, "count": len(results)}
+    result = {"time": elapsed_time, "rows": len(results)}
     print(json.dumps(result))
 
-    return elapsed_time
+    return elapsed_time, results
 
 
 if __name__ == "__main__":
