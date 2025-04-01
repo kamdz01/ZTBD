@@ -7,4 +7,5 @@ services:
     volumes:
       - ./:/data
     ports:
-      - "8081:8080"
+      - "8080:8080"
+    restart: unless-stopped
