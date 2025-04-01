@@ -92,6 +92,30 @@
                     0.592296838760376
                 ]
             }
+        },
+        "fillTestold": {
+            "default": {
+                "times": []
+            }
+        },
+        "joinTest": {
+            "default": {
+                "times": []
+            }
+        },
+        "joinTestv2": {
+            "10": {
+                "times": []
+            },
+            "100": {
+                "times": []
+            },
+            "1000": {
+                "times": []
+            },
+            "10000": {
+                "times": []
+            }
         }
     },
     "couchdb": {
@@ -103,6 +127,9 @@
                 "times": []
             },
             "1000": {
+                "times": []
+            },
+            "100000": {
                 "times": []
             }
         },
@@ -207,6 +234,30 @@
                     0.8501520156860352
                 ]
             }
+        },
+        "fillTestold": {
+            "default": {
+                "times": []
+            }
+        },
+        "joinTest": {
+            "default": {
+                "times": []
+            }
+        },
+        "joinTestv2": {
+            "10": {
+                "times": []
+            },
+            "100": {
+                "times": []
+            },
+            "1000": {
+                "times": []
+            },
+            "10000": {
+                "times": []
+            }
         }
     },
     "sqlite": {
@@ -215,6 +266,12 @@
                 "times": []
             },
             "100": {
+                "times": []
+            },
+            "1000": {
+                "times": []
+            },
+            "100000": {
                 "times": []
             }
         },
@@ -293,6 +350,30 @@
                     0.15869903564453125
                 ]
             }
+        },
+        "fillTestold": {
+            "default": {
+                "times": []
+            }
+        },
+        "joinTest": {
+            "default": {
+                "times": []
+            }
+        },
+        "joinTestv2": {
+            "10": {
+                "times": []
+            },
+            "100": {
+                "times": []
+            },
+            "1000": {
+                "times": []
+            },
+            "10000": {
+                "times": []
+            }
         }
     },
     "postgres": {
@@ -366,6 +447,44 @@
                 "times": [
                     54.86165404319763
                 ]
+            }
+        },
+        "insertTest": {
+            "10": {
+                "times": []
+            },
+            "100": {
+                "times": []
+            },
+            "1000": {
+                "times": []
+            },
+            "100000": {
+                "times": []
+            }
+        },
+        "fillTestold": {
+            "default": {
+                "times": []
+            }
+        },
+        "joinTest": {
+            "default": {
+                "times": []
+            }
+        },
+        "joinTestv2": {
+            "10": {
+                "times": []
+            },
+            "100": {
+                "times": []
+            },
+            "1000": {
+                "times": []
+            },
+            "10000": {
+                "times": []
             }
         }
     }
