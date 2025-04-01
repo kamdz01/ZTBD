@@ -19,6 +19,14 @@
     "select_v2": {
       "description": "Group orders by day",
       "sizes": [10, 100, 1000, 10000]
+    },
+    "joinTest": {
+      "description": "Join orders with products",
+      "sizes": [10, 100, 1000, 10000]
+    },
+    "joinTestv2": {
+      "description": "Join orders with products and customers",
+      "sizes": [10, 100, 1000, 10000]
     }
   }
 }
