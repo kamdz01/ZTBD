@@ -12,7 +12,7 @@ def run_select_test(limit=100):
     db_path = os.path.join(project_dir, "DB", "SQLite", "olist.sqlite")
 
     conn = sqlite3.connect(db_path)
-    
+
     conn.row_factory = sqlite3.Row  # Użycie Row jako fabryki rzędów
     cursor = conn.cursor()
 
@@ -75,10 +75,10 @@ def run_select_test(limit=100):
     conn.close()
 
     # Zwracanie wyniku
-    result = {"time": elapsed_time, "count": len(results_list)}
+    result = {"time": elapsed_time, "rows": len(results_list)}
     print(json.dumps(result))
 
-    return elapsed_time
+    return elapsed_time, results_list
 
 
 if __name__ == "__main__":
