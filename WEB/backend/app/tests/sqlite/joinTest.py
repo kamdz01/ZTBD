@@ -21,7 +21,7 @@ def run_join_test():
         SELECT c.customer_id, c.customer_city, agg.last_order_purchase_timestamp
         FROM customers c
         JOIN (
-            SELECT customer_id, 
+            SELECT customer_id,
                    COUNT(*) AS total_orders,
                    MAX(order_purchase_timestamp) AS last_order_purchase_timestamp
             FROM orders

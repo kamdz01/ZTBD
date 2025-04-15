@@ -5,9 +5,8 @@ from pymongo import MongoClient
 
 
 def run_select_test(limit=100):
-    # Połączenie z MongoDB
     client = MongoClient("mongodb://admin:admin@localhost:27017/")
-    db = client["olist"]
+    db = client["ecommerce"]
 
     # Tworzenie indeksów w celu przyspieszenia zapytania
     try:

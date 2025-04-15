@@ -3,29 +3,37 @@
   "testScenarios": {
     "insertTest": {
       "description": "Insert x new records",
-      "sizes": [10, 100, 1000, 100000]
+      "sizes": [10, 100, 1000, 100000, 500000]
     },
     "fillTest": {
       "description": "Insert x new records",
-      "sizes": [10, 100, 1000, 100000]
+      "sizes": [10, 100, 1000, 100000, 500000]
     },
     "fillTestold": {
       "description": "Fill the db with data"
     },
     "select_v1": {
       "description": "Complex SELECT with JOINs",
-      "sizes": [10, 100, 1000, 10000]
+      "sizes": [10, 100, 1000, 10000, 500000]
     },
     "select_v2": {
       "description": "Group orders by day",
-      "sizes": [10, 100, 1000, 10000]
+      "sizes": [10, 100, 1000, 10000, 500000]
     },
     "joinTest": {
       "description": "Join orders with products"
     },
     "joinTestv2": {
       "description": "Join orders with products and customers",
-      "sizes": [10, 100, 1000, 10000]
+      "sizes": [10, 100, 1000, 10000, 500000]
+    },
+    "update_v1": {
+      "description": "Test aktualizacji danych",
+      "sizes": [1]
+    },
+    "delete": {
+      "description": "Test usuwania",
+      "sizes": [1]
     }
   }
 }

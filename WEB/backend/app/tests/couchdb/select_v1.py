@@ -5,15 +5,11 @@ import requests
 
 
 def run_select_test(limit=100):
-    # Konfiguracja CouchDB
+
     couch_url = "http://admin:admin@localhost:5984"
 
-    # Start pomiaru czasu
     start_time = time.time()
 
-    # W CouchDB nie ma bezpośredniego odpowiednika JOIN, więc wykonujemy serię zapytań
-
-    # 1. Pobieramy zamówienia (ze statusem 'delivered')
     view_url = f"{couch_url}/orders/_design/orders/_view/by_status"
     params = {
         "key": json.dumps("delivered"),
@@ -26,11 +22,9 @@ def run_select_test(limit=100):
     orders_data = orders_response.json()
     orders = [row["doc"] for row in orders_data.get("rows", [])]
 
-    # Zbieramy wymagane ID do kolejnych zapytań
     customer_ids = [order.get("customer_id") for order in orders]
     order_ids = [order.get("order_id") for order in orders]
 
-    # 2. Pobieramy dane klientów
     customers_response = requests.post(
         f"{couch_url}/customers/_design/customers/_view/by_id",
         json={"keys": customer_ids, "include_docs": True},
@@ -38,7 +32,6 @@ def run_select_test(limit=100):
     customers_data = customers_response.json()
     customers = {row["key"]: row["doc"] for row in customers_data.get("rows", [])}
 
-    # 3. Pobieramy elementy zamówień
     order_items_response = requests.post(
         f"{couch_url}/order_items/_design/order_items/_view/by_order_id",
         json={"keys": order_ids, "include_docs": True},
@@ -51,7 +44,6 @@ def run_select_test(limit=100):
             order_items[order_id] = []
         order_items[order_id].append(row["doc"])
 
-    # Zbieramy ID produktów i sprzedawców
     product_ids = []
     seller_ids = []
     for items_list in order_items.values():
@@ -59,7 +51,6 @@ def run_select_test(limit=100):
             product_ids.append(item.get("product_id"))
             seller_ids.append(item.get("seller_id"))
 
-    # 4. Pobieramy dane produktów
     products_response = requests.post(
         f"{couch_url}/products/_design/products/_view/by_id",
         json={"keys": product_ids, "include_docs": True},
@@ -67,7 +58,6 @@ def run_select_test(limit=100):
     products_data = products_response.json()
     products = {row["key"]: row["doc"] for row in products_data.get("rows", [])}
 
-    # 5. Pobieramy dane sprzedawców
     sellers_response = requests.post(
         f"{couch_url}/sellers/_design/sellers/_view/by_id",
         json={"keys": seller_ids, "include_docs": True},
@@ -75,7 +65,6 @@ def run_select_test(limit=100):
     sellers_data = sellers_response.json()
     sellers = {row["key"]: row["doc"] for row in sellers_data.get("rows", [])}
 
-    # 6. Pobieramy dane płatności
     payments_response = requests.post(
         f"{couch_url}/order_payments/_design/order_payments/_view/by_order_id",
         json={"keys": order_ids, "include_docs": True},
@@ -85,7 +74,6 @@ def run_select_test(limit=100):
     for row in payments_data.get("rows", []):
         payments[row["key"]] = row["doc"]
 
-    # 7. Pobieramy dane recenzji
     reviews_response = requests.post(
         f"{couch_url}/order_reviews/_design/order_reviews/_view/by_order_id",
         json={"keys": order_ids, "include_docs": True},
@@ -95,13 +83,11 @@ def run_select_test(limit=100):
     for row in reviews_data.get("rows", []):
         reviews[row["key"]] = row["doc"]
 
-    # Łączymy wszystkie dane w jeden zbiór wyników
     results = []
     for order in orders:
         order_id = order.get("order_id")
         customer_id = order.get("customer_id")
 
-        # Dla każdego elementu zamówienia tworzymy jeden wynik
         for item in order_items.get(order_id, []):
             product_id = item.get("product_id")
             seller_id = item.get("seller_id")
@@ -130,18 +116,15 @@ def run_select_test(limit=100):
 
             results.append(result)
 
-            # Ograniczamy wyniki do limitu
             if len(results) >= limit:
                 break
 
         if len(results) >= limit:
             break
 
-    # Koniec pomiaru czasu
     end_time = time.time()
     elapsed_time = end_time - start_time
 
-    # Zwracanie wyniku
     result = {"time": elapsed_time, "rows": len(results)}
     print(json.dumps(result))
 
@@ -149,8 +132,8 @@ def run_select_test(limit=100):
 
 
 if __name__ == "__main__":
-    # Pobranie limitu z argumentów
-    limit = 100  # domyślnie
+
+    limit = 100
     if len(sys.argv) > 1:
         limit = int(sys.argv[1])
 
