@@ -1,0 +1,5 @@
+Delete update
+trigger transakcje
+
+partycjonowanie sql
+procedura select -> if -> update/insert/delete

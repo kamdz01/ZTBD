@@ -3,3 +3,4 @@ uvicorn
 pymongo
 requests
 psycopg2-binary
+couchdb
