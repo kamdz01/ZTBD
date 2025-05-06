@@ -1,5 +1,13 @@
 Delete update
+
 trigger transakcje
 
 partycjonowanie sql
-procedura select -> if -> update/insert/delete
+
+tego nie robimy: procedura select -> if -> update/insert/delete
+
+
+prezentacja
+pokazać działanie aplikacji (1-2 testy)
+
+sprawozdanie ocenia osobno

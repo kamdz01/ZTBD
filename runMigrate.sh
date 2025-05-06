@@ -10,5 +10,5 @@ echo "Instalacja zależności backendu..."
 echo "Uruchamianie migracji dla CouchDB..."
 (cd DB/CouchDB &&  pip install -r requirements.txt && python3 import_all.py)
 
-# echo "Uruchamianie migracji dla MongoDB..."
-# (cd DB/MongoDB && pip install -r requirements.txt && python3 migrate.py)
+echo "Uruchamianie migracji dla MongoDB..."
+(cd DB/MongoDB && pip install -r requirements.txt && python3 migrate.py)

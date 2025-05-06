@@ -1,0 +1,54 @@
+{
+  "postgres": {
+    "partition_test": {
+      "with_partition": {
+        "time": 0.0064809322357177734,
+        "rows": 14516
+      },
+      "without_partition": {
+        "time": 0.012493133544921875,
+        "rows": 14516
+      },
+      "improvement": "48.12%"
+    }
+  },
+  "mongodb": {
+    "partition_test": {
+      "with_partition": {
+        "time": 0.030367374420166016,
+        "rows": 187524
+      },
+      "without_partition": {
+        "time": 0.040946245193481445,
+        "rows": 187524
+      },
+      "improvement": "25.84%"
+    }
+  },
+  "couchdb": {
+    "partition_test": {
+      "with_partition": {
+        "time": 0.022203922271728516,
+        "rows": 25
+      },
+      "without_partition": {
+        "time": 0.02423095703125,
+        "rows": 25
+      },
+      "improvement": "8.37%"
+    }
+  },
+  "sqlite": {
+    "partition_test": {
+      "with_partition": {
+        "time": 2.5033950805664062e-05,
+        "rows": 2
+      },
+      "without_partition": {
+        "time": 0.00017714500427246094,
+        "rows": 2
+      },
+      "improvement": "85.87%"
+    }
+  }
+}

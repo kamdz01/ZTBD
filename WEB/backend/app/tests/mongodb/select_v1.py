@@ -28,9 +28,11 @@ def run_select_test(limit=100):
     pipeline = [
         # Filtrowanie na samym początku
         {"$match": {"order_status": "delivered"}},
-        # Sortowanie i limit przed drogimi operacjami
+        # Sortowanie i limit przed drogimi operacjami (ogranicza początkową liczbę dokumentów)
         {"$sort": {"order_purchase_timestamp": -1}},
-        {"$limit": limit},
+        {
+            "$limit": limit * 10
+        },  # Bierzemy więcej dokumentów początkowych, bo $unwind może je zwielokrotnić
         # Dalsze operacje na mniejszym zbiorze danych
         {
             "$lookup": {
@@ -105,6 +107,8 @@ def run_select_test(limit=100):
                 "review_score": {"$arrayElemAt": ["$review.review_score", 0]},
             }
         },
+        # Drugi limit - TUTAJ NA KOŃCU ograniczamy ostateczną liczbę wyników
+        {"$limit": limit},
     ]
 
     # Użycie allowDiskUse, aby umożliwić wykorzystanie dysku przy dużych danych

@@ -43,7 +43,7 @@ def run_join_test():
     result = {"time": elapsed_time, "rows": row_count}
     print(json.dumps(result))
 
-    return elapsed_time, results
+    return elapsed_time
 
 
 if __name__ == "__main__":
